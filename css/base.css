@@ -1,0 +1,120 @@
+/* Tokens, reset e comportamento. O visual das telas fica em telas.css. */
+
+:root {
+  --fonte-display: Anton, system-ui, sans-serif;
+  --fonte-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --fonte-texto: Archivo, system-ui, sans-serif;
+  --preto: #0b0b0b;
+  --branco: #ffffff;
+  --amarelo: #fedf00;
+  --transicao: 200ms ease-out;
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--preto);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Cada tela mantém a largura do design, centralizada */
+.tela > * {
+  margin-inline: auto;
+}
+
+/* Elementos do design que viraram botões */
+.clicavel {
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: filter var(--transicao), transform var(--transicao);
+}
+
+.clicavel:hover {
+  filter: brightness(1.08);
+}
+
+.clicavel:active {
+  transform: scale(0.98);
+}
+
+.clicavel:focus-visible {
+  outline: 3px solid var(--branco) !important;
+  outline-offset: 3px !important;
+}
+
+/* Modais */
+.modal {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  max-width: none;
+  max-height: 100dvh;
+  overflow: visible;
+}
+
+.modal::backdrop {
+  background: rgb(11 11 11 / 0.75);
+}
+
+.modal[open] {
+  animation: entrar 220ms ease-out;
+}
+
+.fechar {
+  position: absolute;
+  z-index: 60;
+  top: -40px;
+  right: 0;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  color: var(--branco);
+  font: 700 12px var(--fonte-mono);
+  cursor: pointer;
+}
+
+.fechar:focus-visible {
+  outline: 3px solid var(--amarelo);
+}
+
+.modal > :not(.fechar) {
+  margin-top: 40px;
+}
+
+/* Aviso de confirmação */
+.aviso {
+  position: fixed;
+  z-index: 100;
+  left: 50%;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 12px 18px;
+  max-width: calc(100vw - 32px);
+  background: var(--amarelo);
+  color: var(--preto);
+  font: 700 13px var(--fonte-mono);
+  outline: 3px solid var(--preto);
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clicavel,
+  .modal[open] {
+    transition: none;
+    animation: none;
+  }
+}
