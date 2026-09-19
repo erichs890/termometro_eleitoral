@@ -1,120 +1,261 @@
-/* Tokens, reset e comportamento. O visual das telas fica em telas.css. */
+/* ==========================================================================
+   Pesquisa Eleitoral 2026: sistema de design
+   Tudo aqui é neutro. O lado escolhido (lula | flavio) troca só os tokens
+   de acento em <html data-lado="...">, e a página inteira se remodela.
+   ========================================================================== */
 
 :root {
-  --fonte-display: Anton, system-ui, sans-serif;
-  --fonte-mono: "IBM Plex Mono", ui-monospace, monospace;
-  --fonte-texto: Archivo, system-ui, sans-serif;
-  --preto: #0b0b0b;
-  --branco: #ffffff;
+  /* tipografia */
+  --f-display: Anton, "Archivo", system-ui, sans-serif;
+  --f-texto: Archivo, system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  /* base escura (vale para os dois lados) */
+  --tinta: #07080a;
+  --tinta-2: #0d0f13;
+  --superficie: #12141a;
+  --superficie-2: #171a21;
+  --linha: rgb(255 255 255 / 0.09);
+  --linha-forte: rgb(255 255 255 / 0.18);
+  --texto: #f4f5f7;
+  --texto-2: rgb(244 245 247 / 0.66);
+  --texto-3: rgb(244 245 247 / 0.42);
+  --branco: #fff;
   --amarelo: #fedf00;
-  --transicao: 200ms ease-out;
+
+  /* cores fixas de cada campo: usadas no gráfico, que é igual pros dois */
+  --lula: #e11d2e;
+  --lula-esc: #8d0f1c;
+  --lula-claro: #ff5a63;
+  --flavio: #00944a;
+  --flavio-esc: #05532d;
+  --flavio-claro: #35d17f;
+
+  /* o rival nunca aparece com a cor dele: sai sempre em cinza neutro */
+  --rival: #6b7280;
+  --rival-esc: #343a45;
+  --rival-claro: #a9b1bd;
+
+  /* acento neutro (portão) */
+  --acento: #f4f5f7;
+  --acento-esc: #4a4f5a;
+  --acento-claro: #fff;
+  --acento-contraste: #07080a;
+  --brilho: rgb(244 245 247 / 0.14);
+  --fundo-topo: #0a0b0e;
+  --meu: var(--acento);
+  --meu-esc: var(--acento-esc);
+  --meu-claro: var(--acento-claro);
+
+  /* ritmo */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 26px;
+  --max: 1180px;
+  --transicao: 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---- tema LULA -------------------------------------------------------- */
+html[data-lado="lula"] {
+  --acento: #e11d2e;
+  --acento-esc: #6e0b16;
+  --acento-claro: #ff6a72;
+  --acento-contraste: #fff;
+  --brilho: rgb(225 29 46 / 0.22);
+  --fundo-topo: #150406;
+  --tinta: #08070a;
+  --superficie: #161013;
+  --superficie-2: #1d1418;
+  --meu: var(--lula);
+  --meu-esc: var(--lula-esc);
+  --meu-claro: var(--lula-claro);
+}
+
+/* ---- tema FLÁVIO ------------------------------------------------------ */
+html[data-lado="flavio"] {
+  --acento: #00a854;
+  --acento-esc: #04512d;
+  --acento-claro: #45db8b;
+  --acento-contraste: #04210f;
+  --brilho: rgb(0 168 84 / 0.2);
+  --fundo-topo: #03150c;
+  --tinta: #06090a;
+  --superficie: #0e1512;
+  --superficie-2: #121c17;
+  --meu: var(--flavio);
+  --meu-esc: var(--flavio-esc);
+  --meu-claro: var(--flavio-claro);
 }
 
 *,
 ::before,
-::after {
-  box-sizing: border-box;
-}
+::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  background: var(--preto);
-  overflow-x: hidden;
+  min-height: 100dvh;
+  background: var(--tinta);
+  color: var(--texto);
+  font: 400 16px/1.6 var(--f-texto);
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: background var(--transicao);
 }
 
-/* Cada tela mantém a largura do design, centralizada */
-.tela > * {
-  margin-inline: auto;
+/* clarão de cor do candidato no topo da página */
+body::before {
+  content: "";
+  position: fixed;
+  z-index: 0;
+  inset: 0 0 auto 0;
+  height: 70vh;
+  pointer-events: none;
+  background:
+    radial-gradient(90% 100% at 50% -10%, var(--brilho), transparent 62%),
+    linear-gradient(var(--fundo-topo), transparent);
+  transition: background var(--transicao);
 }
 
-/* Elementos do design que viraram botões */
-.clicavel {
-  cursor: pointer;
-  touch-action: manipulation;
-  transition: filter var(--transicao), transform var(--transicao);
-}
+img { max-width: 100%; display: block; }
 
-.clicavel:hover {
-  filter: brightness(1.08);
-}
+h1, h2, h3 { margin: 0; font-family: var(--f-display); font-weight: 400; letter-spacing: 0.01em; line-height: 0.94; text-transform: uppercase; }
+p { margin: 0; }
+a { color: inherit; }
 
-.clicavel:active {
-  transform: scale(0.98);
-}
+button { font: inherit; color: inherit; cursor: pointer; }
 
-.clicavel:focus-visible {
-  outline: 3px solid var(--branco) !important;
-  outline-offset: 3px !important;
-}
-
-/* Modais */
-.modal {
-  padding: 0;
-  border: 0;
-  background: transparent;
-  max-width: none;
-  max-height: 100dvh;
-  overflow: visible;
-}
-
-.modal::backdrop {
-  background: rgb(11 11 11 / 0.75);
-}
-
-.modal[open] {
-  animation: entrar 220ms ease-out;
-}
-
-.fechar {
-  position: absolute;
-  z-index: 60;
-  top: -40px;
-  right: 0;
-  min-height: 32px;
-  padding: 0 10px;
-  border: 0;
-  background: transparent;
-  color: var(--branco);
-  font: 700 12px var(--fonte-mono);
-  cursor: pointer;
-}
-
-.fechar:focus-visible {
+:where(a, button, [tabindex]):focus-visible {
   outline: 3px solid var(--amarelo);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
-.modal > :not(.fechar) {
-  margin-top: 40px;
+/* ---- utilitários ------------------------------------------------------ */
+.env { width: 100%; max-width: var(--max); margin-inline: auto; padding-inline: 22px; }
+
+.mono {
+  font: 700 11px/1 var(--f-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
-/* Aviso de confirmação */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--texto-2);
+}
+.kicker::before {
+  content: "";
+  width: 26px;
+  height: 2px;
+  background: var(--acento);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  border: 1px solid var(--linha);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.03);
+  backdrop-filter: blur(8px);
+}
+
+/* pisca na cor do campo escolhido, nunca na cor do outro lado */
+.ponto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--acento-claro);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--acento-claro) 60%, transparent);
+  animation: pulsar 2s infinite;
+}
+@keyframes pulsar {
+  70% { box-shadow: 0 0 0 9px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+/* ---- botões ----------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 26px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--acento);
+  color: var(--acento-contraste);
+  font: 700 13px/1 var(--f-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 0 10px 30px -10px var(--acento), inset 0 1px 0 rgb(255 255 255 / 0.25);
+  transition: transform var(--transicao), box-shadow var(--transicao), background var(--transicao);
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 16px 38px -12px var(--acento), inset 0 1px 0 rgb(255 255 255 / 0.3); }
+.btn:active { transform: translateY(0) scale(0.985); }
+
+.btn--fantasma {
+  background: transparent;
+  color: var(--texto);
+  border: 1px solid var(--linha-forte);
+  box-shadow: none;
+}
+.btn--fantasma:hover { background: rgb(255 255 255 / 0.06); border-color: var(--acento); box-shadow: none; }
+
+.btn--bloco { width: 100%; }
+.btn[disabled] { opacity: 0.38; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* ---- cartões ---------------------------------------------------------- */
+.cartao {
+  position: relative;
+  border: 1px solid var(--linha);
+  border-radius: var(--r-lg);
+  background: linear-gradient(170deg, var(--superficie-2), var(--superficie));
+  overflow: hidden;
+}
+
+/* ---- seções ----------------------------------------------------------- */
+.secao { position: relative; z-index: 1; padding-block: clamp(56px, 8vw, 104px); }
+.secao__cabeca { display: grid; gap: 16px; max-width: 760px; margin-bottom: 40px; }
+.secao__cabeca h2 { font-size: clamp(34px, 5.6vw, 58px); }
+.secao__cabeca p { color: var(--texto-2); font-size: 17px; }
+
+.divisor {
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background: linear-gradient(90deg, transparent, var(--linha-forte), transparent);
+}
+
+/* ---- aviso flutuante -------------------------------------------------- */
 .aviso {
   position: fixed;
-  z-index: 100;
+  z-index: 200;
   left: 50%;
-  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-  transform: translateX(-50%);
+  bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+  transform: translate(-50%, 130%);
   margin: 0;
-  padding: 12px 18px;
+  padding: 14px 22px;
   max-width: calc(100vw - 32px);
-  background: var(--amarelo);
-  color: var(--preto);
-  font: 700 13px var(--fonte-mono);
-  outline: 3px solid var(--preto);
+  border-radius: 999px;
+  border: 1px solid var(--linha-forte);
+  background: rgb(12 14 18 / 0.92);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 20px 50px -18px #000;
+  color: var(--texto);
+  font: 700 13px var(--f-mono);
+  letter-spacing: 0.06em;
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-
-@keyframes entrar {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-}
+.aviso[data-visivel] { transform: translate(-50%, 0); }
 
 @media (prefers-reduced-motion: reduce) {
-  .clicavel,
-  .modal[open] {
-    transition: none;
-    animation: none;
-  }
+  html { scroll-behavior: auto; }
+  *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
